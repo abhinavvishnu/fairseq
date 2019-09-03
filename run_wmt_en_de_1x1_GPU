@@ -1,16 +1,12 @@
 TEXT=examples/translation/wmt17_en_de
 #export NCCL_P2P_LEVEL=5
 #export NCCL_SHM_DISABLE=1
-#export NCCL_P2P_DISABLE=1
+export NCCL_P2P_DISABLE=1
 export HSA_FORCE_FINE_GRAIN_PCIE=1
-#export HIP_VISIBLE_DEVICES=0
-export NCCL_SOCKET_IFNAME=eth0
-export NCCL_DEBUG=INFO
+export HIP_VISIBLE_DEVICES=0
 
-export HIP_VISIBLE_DEVICES=0,1
-
-fairseq-train $TEXT/wmt17.tokenized.en-de/ \
-    --arch transformer_wmt_en_de_big_t2t --update-freq 2\
+NCCL_DEBUG=INFO python3.6 /dockerx/fairseq/train.py $TEXT/wmt17.tokenized.en-de/ --distributed-init-method "tcp://192.168.1.217:54321" --distributed-world-size 2 --distributed-rank 1 --update-freq 8\
+    --arch transformer_wmt_en_de_big_t2t \
     --optimizer adam --adam-betas '(0.9, 0.98)' --clip-norm 0.0 \
     --lr-scheduler inverse_sqrt --warmup-init-lr 1e-07 --warmup-updates 4000 \
     --lr 0.0005 --min-lr 1e-09 \
