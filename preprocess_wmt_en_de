@@ -1,0 +1,4 @@
+TEXT=examples/translation/wmt17_en_de
+fairseq-preprocess --source-lang en --target-lang de\
+    --trainpref $TEXT/train --validpref $TEXT/valid --testpref $TEXT/test \
+    --destdir $TEXT/iwslt14.tokenized.de-en
